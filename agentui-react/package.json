@@ -1,5 +1,5 @@
 {
-  "name": "agentui-react",
+  "name": "agent-ui-react",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "version": "0.0.1",
