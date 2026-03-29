@@ -2,7 +2,6 @@
 
 This is an UI controls library created on the design language of bootstrap and Microsoft fluent UI
 
-
 ## Installation
 
 The package can be installed as an npm package using the following command:
@@ -12,7 +11,6 @@ The package can be installed as an npm package using the following command:
 ```
 
 ## Components
-
 
 ## Release Notes
 
