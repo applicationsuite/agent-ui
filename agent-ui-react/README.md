@@ -1,6 +1,6 @@
 # agent-ui-react
 
-[![version](https://img.shields.io/badge/version-0.1.0-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-0.1.2-blue.svg)](docs/ChangeLog.md)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A React component library for building agent-based user interfaces. Provides production-ready components for conversational AI experiences, authentication, and template-driven data rendering — all built on [Fluent UI](https://react.fluentui.dev/) and the [AG-UI protocol](https://github.com/ag-ui-protocol).
@@ -103,7 +103,7 @@ function App() {
 
 ## Release Notes
 
-See the full [version history and changelog](docs/ReleaseNotes.md).
+See the full [version history and changelog](docs/ChangeLog.md).
 
 ---
 
