@@ -12,6 +12,7 @@ public
 biome.json
 eslint.config.mjs
 rsbuild.config.ts
+rspack.config.ts
 package-lock.json
 tsconfig.json
 tsconfig.prod.json

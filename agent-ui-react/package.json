@@ -2,7 +2,7 @@
   "name": "agent-ui-react",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "clean": "rimraf lib",
     "build": "npm run clean && tsc -p tsconfig.prod.json",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@ag-ui/client": "^0.0.48",
-    "@ag-ui/core": "^0.0.48",    
+    "@ag-ui/core": "^0.0.48",
     "@fluentui/react-components": "^9.73.6",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
