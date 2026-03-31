@@ -1,0 +1,1 @@
+export declare const useTemplateDesignStyles: () => Record<"panelBusyOverlay" | "shimmerRoot" | "shimmerToolbar" | "shimmerToolbarLeft" | "shimmerToolbarRight" | "shimmerContent" | "shimmerTreePanel" | "shimmerPreviewPanel" | "shimmerPreviewCard" | "shimmerPropertyPanel", string>;

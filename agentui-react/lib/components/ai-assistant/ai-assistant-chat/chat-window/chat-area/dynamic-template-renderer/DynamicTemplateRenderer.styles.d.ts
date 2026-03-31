@@ -1,0 +1,1 @@
+export declare const useDynamicTemplateRendererStyles: () => Record<"localAssistantBubble" | "assistantBlock" | "assistantPreamble" | "avatar" | "assistantCard" | "cancelledMessage" | "localAssistantRichContent" | "generatedAssistantHtml", string>;

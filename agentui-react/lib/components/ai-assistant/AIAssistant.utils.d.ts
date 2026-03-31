@@ -1,0 +1,32 @@
+import type { IAIAssistantConversation, IAIAssistantMessage, ITemplateInfo } from './AIAssistant.models';
+import type { Message } from '@ag-ui/core';
+import type { IToolCallRecord } from './ag-ui/agui.subscriber';
+export { type ITemplateInfo as ITemplateEntry } from './AIAssistant.models';
+export { CANCELLED_MESSAGE, DEFAULT_DEPLOYMENT, DEFAULT_API_VERSION, } from './AIAssistant.models';
+export declare const isRecord: (value: unknown) => value is Record<string, unknown>;
+export declare const unwrapResults: (value: unknown) => unknown;
+export declare const parseStructuredPayload: (raw?: string) => unknown | undefined;
+export declare const extractTemplateEntries: (value: unknown) => ITemplateInfo[];
+export declare const extractCustomPrompt: (value: unknown) => string | undefined;
+export declare const extractDisplayText: (message: IAIAssistantMessage, payload: unknown) => string;
+export declare const buildSystemPrompt: () => string;
+export declare const buildUserPrompt: (userMessageText: string | undefined, payload: unknown, customPrompt?: string) => string;
+export declare const normalizeGeneratedHtml: (raw: string) => string;
+export interface IParsedMessage {
+    preGeneratedHtml: string | undefined;
+    payload: unknown;
+}
+export declare const parseSerializedMessage: (message: IAIAssistantMessage) => IParsedMessage;
+export declare const isConversation: (value: unknown) => value is IAIAssistantConversation;
+export declare const createThreadId: () => string;
+export declare const buildCacheKey: (templateInfo: ITemplateInfo | undefined, payload: unknown, customPrompt: string | undefined) => string;
+export declare const getErrorMessage: (error: unknown, fallbackMessage: string) => string;
+export declare const serializePayload: (payload: unknown) => string | undefined;
+export declare const parseMessageContent: (message: Message) => unknown | undefined;
+export declare const createConversation: (messageText: string, agentName: string, timestamp: string, threadId: string) => IAIAssistantConversation;
+export declare const createAssistantMessage: (messageText: string, partitionKey: string, payload?: unknown) => IAIAssistantMessage;
+export declare const buildPayloadFromToolCalls: (toolCalls: IToolCallRecord[]) => unknown | undefined;
+export declare const buildRawToolPayload: (toolCalls: IToolCallRecord[], assistantText?: string) => unknown;
+export declare const extractRenderablePayload: (messages: Message[]) => unknown;
+export declare const hasRegisteredTemplate: (payload: unknown) => boolean;
+export declare const shouldRenderHelloWorldTemplate: (messageText: string) => boolean;

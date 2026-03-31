@@ -8,6 +8,12 @@ const isDev = process.env.NODE_ENV === "development";
 const targets = ["last 2 versions", "> 0.2%", "not dead", "Firefox ESR"];
 
 export default defineConfig({
+	devServer: {
+		port: 3000,
+		historyApiFallback: true,
+		hot: true,
+		open: true,
+	},
 	entry: {
 		main: "./src/main.tsx",
 	},

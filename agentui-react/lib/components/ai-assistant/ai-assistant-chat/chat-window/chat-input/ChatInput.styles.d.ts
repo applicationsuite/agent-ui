@@ -1,0 +1,1 @@
+export declare const useChatInputStyles: () => Record<"footer" | "textarea" | "wrapper" | "iconButton" | "suggestionItem" | "suggestionTitle" | "composer" | "leftTools" | "modelButton" | "rightTools" | "sendButton" | "sendButtonActive" | "stopButton" | "suggestionsDropdown" | "suggestionItemActive" | "suggestionPrompt", string>;

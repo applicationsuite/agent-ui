@@ -1,0 +1,1 @@
+export declare const usePropertyPanelStyles: () => Record<"field" | "row" | "header" | "root" | "emptyIcon" | "headerLabel" | "headerBadge" | "sectionGroup" | "sectionHeader" | "sectionTitle" | "sectionChevron" | "sectionChevronCollapsed" | "sectionBody" | "sectionBodyHidden" | "halfField" | "empty" | "columnCard" | "columnHeader" | "addColumnBtn", string>;

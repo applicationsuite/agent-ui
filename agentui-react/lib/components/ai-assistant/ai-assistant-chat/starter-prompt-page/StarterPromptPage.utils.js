@@ -1,0 +1,143 @@
+export const createInitialFormState = (defaultAgentName = '') => ({
+    agentName: defaultAgentName,
+    parameters: [],
+    prompt: '',
+    tags: [],
+    title: '',
+});
+export const normalizeParameterName = (value) => {
+    return value
+        .trim()
+        .replace(/^\{+|\}+$/g, '')
+        .replace(/\s+/g, '_')
+        .replace(/[^\w]/g, '');
+};
+export const normalizeStringList = (values) => {
+    if (!values) {
+        return [];
+    }
+    return values
+        .map((value) => value.trim())
+        .filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
+};
+export const PARAMETER_SUGGESTION_WIDTH = 220;
+export const PARAMETER_SUGGESTION_MAX_HEIGHT = 140;
+export const mergeUniqueParameters = (existing, incoming) => {
+    const merged = [...existing];
+    let changed = false;
+    for (const parameter of incoming) {
+        const normalized = normalizeParameterName(parameter);
+        if (!normalized) {
+            continue;
+        }
+        if (!merged.some((value) => value.toLowerCase() === normalized.toLowerCase())) {
+            merged.push(normalized);
+            changed = true;
+        }
+    }
+    return changed ? merged : existing;
+};
+export const getParameterSuggestionContext = (promptValue, caretPosition) => {
+    if (caretPosition < 0 || caretPosition > promptValue.length) {
+        return null;
+    }
+    const beforeCursor = promptValue.slice(0, caretPosition);
+    const triggerStart = beforeCursor.lastIndexOf('{');
+    if (triggerStart < 0) {
+        return null;
+    }
+    const previousClosingBrace = beforeCursor.lastIndexOf('}');
+    if (previousClosingBrace > triggerStart) {
+        return null;
+    }
+    const query = beforeCursor.slice(triggerStart + 1);
+    if (!/^\w*$/.test(query)) {
+        return null;
+    }
+    return {
+        triggerStart,
+        cursor: caretPosition,
+        query,
+    };
+};
+export const getTextAreaCaretCoordinates = (textArea, position) => {
+    const mirror = document.createElement('div');
+    const style = window.getComputedStyle(textArea);
+    const mirroredProperties = [
+        'box-sizing',
+        'width',
+        'height',
+        'overflow-x',
+        'overflow-y',
+        'border-top-width',
+        'border-right-width',
+        'border-bottom-width',
+        'border-left-width',
+        'padding-top',
+        'padding-right',
+        'padding-bottom',
+        'padding-left',
+        'font-style',
+        'font-variant',
+        'font-weight',
+        'font-stretch',
+        'font-size',
+        'line-height',
+        'font-family',
+        'letter-spacing',
+        'text-transform',
+        'text-indent',
+        'text-decoration',
+        'tab-size',
+        'text-align',
+        'white-space',
+        'word-break',
+        'overflow-wrap',
+    ];
+    for (const property of mirroredProperties) {
+        mirror.style.setProperty(property, style.getPropertyValue(property));
+    }
+    mirror.style.position = 'absolute';
+    mirror.style.visibility = 'hidden';
+    mirror.style.whiteSpace = 'pre-wrap';
+    mirror.style.wordBreak = 'break-word';
+    mirror.style.overflow = 'hidden';
+    mirror.style.top = '0';
+    mirror.style.left = '-9999px';
+    mirror.textContent = textArea.value.slice(0, position);
+    const caretMarker = document.createElement('span');
+    caretMarker.textContent = textArea.value.slice(position) || ' ';
+    mirror.appendChild(caretMarker);
+    document.body.appendChild(mirror);
+    const lineHeight = Number.parseFloat(style.lineHeight) || 20;
+    const top = caretMarker.offsetTop;
+    const left = caretMarker.offsetLeft;
+    document.body.removeChild(mirror);
+    return { top, left, lineHeight };
+};
+export const includesValue = (values, candidate) => {
+    return values.some((value) => value.toLowerCase() === candidate.toLowerCase());
+};
+export const extractParameters = (promptText) => {
+    const matches = promptText.match(/\{([^{}]+)\}/g);
+    if (!matches) {
+        return [];
+    }
+    return matches
+        .map((match) => normalizeParameterName(match.slice(1, -1)))
+        .filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
+};
+export const removeParameterPlaceholders = (promptText, parameter) => {
+    const escapedParameter = parameter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return promptText
+        .replace(new RegExp(`\\{${escapedParameter}\\}`, 'gi'), '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+};
+export const getPromptPreview = (promptText, fallbackText) => {
+    const normalizedPrompt = promptText.trim();
+    if (normalizedPrompt) {
+        return normalizedPrompt;
+    }
+    return fallbackText?.trim() ?? '';
+};

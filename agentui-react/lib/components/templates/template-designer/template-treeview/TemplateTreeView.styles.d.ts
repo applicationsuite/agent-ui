@@ -1,0 +1,1 @@
+export declare const useTemplateTreeViewStyles: () => Record<"header" | "root" | "headerLabel" | "treeContainer" | "selectedItem" | "deleteButton" | "dragging" | "dropIndicatorBefore" | "dropIndicatorAfter" | "dropIndicatorInside", string>;
