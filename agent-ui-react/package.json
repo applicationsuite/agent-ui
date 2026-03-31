@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/applicationsuite/agent-ui.git"
+    "url": "git+https://github.com/techtrips/agent-ui.git"
   },
   "keywords": [
     "agent-ui",
