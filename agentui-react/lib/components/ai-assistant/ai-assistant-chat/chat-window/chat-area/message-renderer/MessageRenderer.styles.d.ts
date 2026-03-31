@@ -1,1 +1,0 @@
-export declare const useMessageRendererStyles: () => Record<"localAssistantBubble" | "assistantBlock" | "assistantPreamble" | "avatar" | "assistantCard" | "cancelledMessage" | "localAssistantRichContent" | "generatedAssistantHtml" | "rawJsonCard" | "rawJsonHeader" | "rawJsonCopyButton" | "rawJsonPre" | "shimmerColumn" | "shimmerRow", string>;

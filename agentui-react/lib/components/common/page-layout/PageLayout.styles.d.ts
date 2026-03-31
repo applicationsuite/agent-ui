@@ -1,1 +1,0 @@
-export declare const usePageLayoutStyles: () => Record<"content" | "header" | "root" | "toolbar" | "title" | "headerActions" | "rootSidebar" | "pageContainer" | "pageContainerSidebar" | "headerSidebar" | "headerTitleGroup" | "headerCloseButton" | "titleSidebar" | "toolbarSidebar", string>;

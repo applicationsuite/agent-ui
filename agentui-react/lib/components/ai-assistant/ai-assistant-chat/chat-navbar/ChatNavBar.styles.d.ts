@@ -1,1 +1,0 @@
-export declare const useChatNavBarStyles: () => Record<"root" | "rootCollapsed" | "topActions" | "topActionsCollapsed" | "navButton" | "navButtonActive" | "navButtonCollapsed" | "navSection" | "iconButton", string>;

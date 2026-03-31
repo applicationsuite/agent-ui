@@ -1,1 +1,0 @@
-export declare const useSettingsPageStyles: () => Record<"section" | "body" | "description" | "descriptionSidebar" | "bodySidebar" | "sectionSidebar" | "settingRow" | "settingRowSidebar" | "settingCopy" | "settingLabel" | "settingLabelSidebar" | "settingDescription" | "settingDescriptionSidebar" | "settingDivider", string>;

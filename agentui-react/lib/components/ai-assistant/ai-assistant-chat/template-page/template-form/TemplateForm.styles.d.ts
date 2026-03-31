@@ -1,1 +1,0 @@
-export declare const useTemplateFormStyles: () => Record<"shimmerColumn" | "panelShimmerOverlay" | "formField" | "formFieldHeader" | "formFieldContent" | "fieldIcon" | "fieldTitleGroup" | "fieldTitle" | "fieldDescription" | "fieldInput" | "panelBusyOverlay", string>;
