@@ -8,8 +8,8 @@ All notable changes to `agent-ui-react` are documented here. The format follows 
 
 | Version | Date | Highlights |
 |---------|------|------------|
-| [0.1.3](#013--2026-03-31) | 2026-03-31 | Packaging & documentation fixes |
-| [0.1.2](#012--2026-03-31) | 2026-03-31 | Packaging & documentation fixes |
+| [0.1.3](#013--2026-03-31) | 2026-03-31 | Postversion automation, absolute links for npm |
+| [0.1.2](#012--2026-03-31) | 2026-03-31 | README link fixes for npm, postversion script |
 | [0.1.1](#011--2026-03-31) | 2026-03-31 | Packaging & documentation fixes |
 | [0.1.0](#010--2026-03-31) | 2026-03-31 | Initial release — AuthProvider, AIAssistant, TemplateRenderer, TemplateDesigner |
 
@@ -17,17 +17,10 @@ All notable changes to `agent-ui-react` are documented here. The format follows 
 
 ## [0.1.3] — 2026-03-31
 
-### Added
-
-- Packaging & documentation fixes
-
 ### Changed
 
-- Packaging & documentation fixes
-
-### Fixed
-
-- Packaging & documentation fixes
+- Converted all relative links in README to absolute GitHub URLs so they work correctly on npmjs.com.
+- Updated version badge to reflect current version.
 
 ---
 
@@ -35,15 +28,12 @@ All notable changes to `agent-ui-react` are documented here. The format follows 
 
 ### Added
 
-- Packaging & documentation fixes
+- `postversion` script (`scripts/postversion.js`) to automatically update the README version badge and add a new ChangeLog entry on `npm version`.
 
 ### Changed
 
-- Packaging & documentation fixes
-
-### Fixed
-
-- Packaging & documentation fixes
+- Updated `agent-ui/README.md` with badges, packages table, repository structure, documentation links, and contributing guidelines.
+- Removed version column from Packages table to avoid staleness.
 
 ---
 
