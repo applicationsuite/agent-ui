@@ -1,13 +1,66 @@
 # agent-ui-react
 
-A React UI component library building agent ui experiences.
+[![version](https://img.shields.io/badge/version-0.1.0-blue.svg)](CHANGELOG.md)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+A React component library for building agent-based user interfaces. Provides production-ready components for conversational AI experiences, authentication, and template-driven data rendering — all built on [Fluent UI](https://react.fluentui.dev/) and the [AG-UI protocol](https://github.com/ag-ui-protocol).
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Components](#components)
+- [Dependencies](#dependencies)
+- [Browser Support](#browser-support)
+- [Release Notes](#release-notes)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+
+- Conversational AI assistant with multi-agent support and AG-UI protocol streaming
+- JWT-based authentication with role-to-permission mapping
+- JSON-driven template rendering with 8 built-in control types and data binding
+- Visual template designer with drag-and-drop, live preview, and JSON editing
+- Built on Microsoft Fluent UI for a consistent, accessible design system
+- Fully typed with TypeScript — ships with declaration files
+
+---
 
 ## Installation
 
 ```bash
-npm install --save agent-ui-react@latest
+npm install agent-ui-react
 ```
 
+---
+
+## Quick Start
+
+```tsx
+import { AIAssistant, AuthProvider } from "agent-ui-react";
+
+function App() {
+  return (
+    <AuthProvider
+      config={{ apiBaseUrl: "https://api.example.com", appId: "my-app" }}
+      getAccessToken={getAccessToken}
+    >
+      <AIAssistant
+        config={{ apiBaseUrl: "https://api.example.com", appId: "my-app" }}
+        getAccessToken={getAccessToken}
+        userInfo={{ name: "Jane", email: "jane@example.com" }}
+        permissions={["chat", "templates"]}
+      />
+    </AuthProvider>
+  );
+}
+```
 
 ---
 
@@ -22,17 +75,9 @@ npm install --save agent-ui-react@latest
 
 ---
 
-## Release Notes
-
-For detailed release notes, please refer to our [version history](docs/ReleaseNotes.md)
-
-## Code Repository
-
-https://github.com/techtrips/agent-ui
-
 ## Dependencies
 
-### Runtime Dependencies
+### Runtime
 
 | Package | Description |
 |---------|-------------|
@@ -42,13 +87,48 @@ https://github.com/techtrips/agent-ui
 | `react` | React library |
 | `react-dom` | React DOM renderer |
 | `react-router` | Declarative routing for React |
+
 ---
 
-## Authors and Contributors
+## Browser Support
 
-The project is being initially developed and maintained by [techtrips](https://github.com/techtrips).
+| Browser | Supported |
+|---------|-----------|
+| Chrome (latest) | Yes |
+| Edge (latest) | Yes |
+| Firefox (latest) | Yes |
+| Safari (latest) | Yes |
 
-The contribution to this library is open, so any contribution is very welcome.
-We welcome you to raise issues, add your new requirements or use cases, so that we will close them asap.
+---
 
-For contributing to this library, please [contact us](mailto:visit.chinmaya@gmail.com).
+## Release Notes
+
+See the full [version history and changelog](docs/ReleaseNotes.md).
+
+---
+
+## Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/my-feature`)
+3. **Commit** your changes (`git commit -m "Add my feature"`)
+4. **Push** to the branch (`git push origin feature/my-feature`)
+5. **Open** a Pull Request
+
+For questions or feature requests, please [open an issue](https://github.com/applicationsuite/agent-ui/issues) or [contact us](mailto:visit.chinmaya@gmail.com).
+
+---
+
+## Authors
+
+Developed and maintained by [Tech Trips](https://github.com/techtrips).
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+Copyright © 2026 Tech Trips
