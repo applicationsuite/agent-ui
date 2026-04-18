@@ -1,0 +1,109 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAIAssistantContext } from "../AIAssistantContext";
+import type { StarterPrompt } from "../AIAssistant.types";
+import { useStarterPromptChipsStyles } from "./StarterPromptChips.styles";
+
+const VISIBLE_COUNT = 10;
+const SHIMMER_ROW_1 = [190, 160, 175, 165, 155];
+const SHIMMER_ROW_2 = [125, 105, 150, 180, 120, 70];
+
+const Skeleton = () => {
+	const classes = useStarterPromptChipsStyles();
+	return (
+		<div className={classes.skeletonContainer}>
+			<div className={classes.skeletonRow}>
+				{SHIMMER_ROW_1.map((w, i) => (
+					<div
+						key={`r1-${i}`}
+						className={classes.shimmerChip}
+						style={{ width: `${w}px` }}
+					/>
+				))}
+			</div>
+			<div className={classes.skeletonRow}>
+				{SHIMMER_ROW_2.map((w, i) => (
+					<div
+						key={`r2-${i}`}
+						className={classes.shimmerChip}
+						style={{ width: `${w}px` }}
+					/>
+				))}
+			</div>
+		</div>
+	);
+};
+
+export const StarterPromptChips = () => {
+	const classes = useStarterPromptChipsStyles();
+	const { sendMessage, starterPrompts } = useAIAssistantContext();
+	const [showOverflow, setShowOverflow] = useState(false);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	const visiblePrompts = starterPrompts.slice(0, VISIBLE_COUNT);
+	const overflowPrompts = starterPrompts.slice(VISIBLE_COUNT);
+	const hasOverflow = overflowPrompts.length > 0;
+
+	useEffect(() => {
+		if (!showOverflow) return;
+		const handleClickOutside = (e: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(e.target as Node)
+			) {
+				setShowOverflow(false);
+			}
+		};
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, [showOverflow]);
+
+	const handleSelect = useCallback(
+		(prompt: StarterPrompt) => {
+			const message = prompt.prompt ?? prompt.title;
+			sendMessage(message);
+		},
+		[sendMessage],
+	);
+
+	if (starterPrompts.length === 0) return null;
+
+	return (
+		<div className={classes.root}>
+			{visiblePrompts.map((prompt, idx) => (
+				<button
+					key={`${prompt.id ?? prompt.title}-${idx}`}
+					type="button"
+					className={classes.chip}
+					onClick={() => handleSelect(prompt)}
+				>
+					{prompt.title}
+				</button>
+			))}
+			{hasOverflow && (
+				<div className={classes.moreWrapper} ref={dropdownRef}>
+					<button
+						className={classes.moreChip}
+						type="button"
+						onClick={() => setShowOverflow((prev) => !prev)}
+					>
+						+{overflowPrompts.length} more
+					</button>
+					{showOverflow && (
+						<div className={classes.overflowDropdown}>
+							{overflowPrompts.map((prompt, idx) => (
+								<button
+									key={`${prompt.id ?? prompt.title}-o-${idx}`}
+									className={classes.overflowItem}
+									type="button"
+									onClick={() => handleSelect(prompt)}
+								>
+									{prompt.title}
+								</button>
+							))}
+						</div>
+					)}
+				</div>
+			)}
+		</div>
+	);
+};

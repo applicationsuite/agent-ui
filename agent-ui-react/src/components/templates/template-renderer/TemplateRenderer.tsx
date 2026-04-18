@@ -1,6 +1,6 @@
 import { Text } from "@fluentui/react-components";
 import type { ITemplate } from "../templates.models";
-import type { ITemplateComponentProps } from "../../ai-assistant/AIAssistant.models";
+import type { ITemplateComponentProps } from "../../ai-assistant-old/AIAssistant.models";
 import { TemplateCard } from "./control-renderer/TemplateCard";
 
 /**

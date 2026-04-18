@@ -1,4 +1,4 @@
-import type { IAIAssistantAgent } from "../../../ai-assistant/AIAssistant.models";
+import type { IAIAssistantAgent } from "../../../ai-assistant-old/AIAssistant.models";
 
 export const HOME_ASSISTANT_AGENTS: IAIAssistantAgent[] = [
 	{

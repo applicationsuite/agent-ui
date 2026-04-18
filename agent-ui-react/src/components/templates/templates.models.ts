@@ -2,7 +2,7 @@
 // Control type discriminant
 // ---------------------------------------------------------------------------
 
-import { IActionArgs } from "../ai-assistant/AIAssistant.models";
+import { IActionArgs } from "../ai-assistant-old/AIAssistant.models";
 
 export enum ControlType {
 	Field = "field",

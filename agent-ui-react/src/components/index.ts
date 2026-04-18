@@ -1,3 +1,3 @@
-export * from "./ai-assistant";
+export * from "./ai-assistant-old";
 export * from "./auth-provider";
 export * from "./templates";

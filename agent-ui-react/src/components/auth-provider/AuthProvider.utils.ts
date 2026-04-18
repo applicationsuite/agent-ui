@@ -1,4 +1,4 @@
-import { AIAssistantPermission, IUserInfo } from "../ai-assistant";
+import { AIAssistantPermission, IUserInfo } from "../ai-assistant-old";
 
 /**
  * Default utility that converts an array of raw role strings into

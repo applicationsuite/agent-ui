@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import type { IUserInfo } from "../ai-assistant/AIAssistant.models";
+import type { IUserInfo } from "../ai-assistant-old/AIAssistant.models";
 import { AuthContext } from "./AuthProvider.context";
 import { getUserInfoFromToken } from "./AuthProvider.utils";
 import { AuthProviderService } from "./AuthProvider.services";

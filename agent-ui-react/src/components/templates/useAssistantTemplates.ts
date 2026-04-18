@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { ITemplateInfo } from "../ai-assistant/AIAssistant.models";
+import type { ITemplateInfo } from "../ai-assistant-old/AIAssistant.models";
 import { getTemplateComponent } from "./templateRegistry";
 
 export const useAssistantTemplates = () => {

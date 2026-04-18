@@ -1,4 +1,4 @@
-import type { IUserInfo } from "../ai-assistant/AIAssistant.models";
+import type { IUserInfo } from "../ai-assistant-old/AIAssistant.models";
 import { IAuthProviderService } from "./AuthProvider.services";
 
 export interface IAuthProviderConfig {

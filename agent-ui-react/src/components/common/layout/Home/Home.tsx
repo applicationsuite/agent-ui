@@ -10,12 +10,12 @@ import {
 	TemplateRenderer,
 	createAssistantService,
 	AIAssistantPermission,
-} from "../../../ai-assistant-v2";
-import { AIAssistant as AIAssistantV1 } from "../../../ai-assistant/AIAssistant";
+} from "../../../ai-assistant";
+import { AIAssistant as AIAssistantV1 } from "../../../ai-assistant-old/AIAssistant";
 import {
 	AIAssistantDisplayMode,
 	IAssistantConfig,
-} from "../../../ai-assistant/AIAssistant.models";
+} from "../../../ai-assistant-old/AIAssistant.models";
 import { HOME_ASSISTANT_AGENTS } from "./Home.models";
 import { useAssistantTemplates } from "../../../templates/useAssistantTemplates";
 import { mapRolesToPermissions } from "../../../auth-provider/AuthProvider.utils";

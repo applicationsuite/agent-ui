@@ -1,4 +1,4 @@
-import { IUserInfo } from "../ai-assistant";
+import { IUserInfo } from "../ai-assistant-old";
 
 export interface IAuthProviderService {
 	getRoles: (userInfo: IUserInfo) => Promise<string[]>;
