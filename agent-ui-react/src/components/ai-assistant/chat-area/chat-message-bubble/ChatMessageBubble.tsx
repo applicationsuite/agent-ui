@@ -2,12 +2,23 @@ import { SparkleRegular } from "@fluentui/react-icons";
 import { useChatMessageBubbleStyles } from "./ChatMessageBubble.styles";
 import { formatTime } from "./ChatMessageBubble.utils";
 import type { IChatMessageBubbleProps } from "./ChatMessageBubble.types";
+import { IsolatedHtmlRenderer } from "./IsolatedHtmlRenderer";
+import { useResolveMessage } from "./useResolveMessage";
+import { useAIAssistantContext } from "../../AIAssistantContext";
+import { Skeleton, SkeletonItem } from "@fluentui/react-components";
 
 export const ChatMessageBubble = ({
 	message,
-	renderMessage: CustomRenderer,
+	renderMessage,
 }: IChatMessageBubbleProps) => {
 	const classes = useChatMessageBubbleStyles();
+	const { service } = useAIAssistantContext();
+	const customContent = renderMessage?.(message);
+	const { resolvedHtml, isLoading } = useResolveMessage(
+		message,
+		service,
+		!!customContent,
+	);
 
 	if (message.role === "user") {
 		return (
@@ -35,6 +46,11 @@ export const ChatMessageBubble = ({
 		);
 	}
 
+	const resolvedHtmlFromData = message.data?.__resolvedHtml as
+		| string
+		| undefined;
+	const html = resolvedHtml ?? resolvedHtmlFromData;
+
 	return (
 		<div className={classes.assistantBlock}>
 			<div className={classes.assistantPreamble}>
@@ -43,9 +59,19 @@ export const ChatMessageBubble = ({
 				</span>
 				<span>{formatTime(message.timestamp)}</span>
 			</div>
-			{CustomRenderer ? (
+			{customContent ? (
+				<div className={classes.assistantCard}>{customContent}</div>
+			) : isLoading ? (
+				<div className={classes.assistantBubble}>
+					<Skeleton animation="pulse">
+						<SkeletonItem size={16} />
+						<SkeletonItem size={16} style={{ width: "75%" }} />
+						<SkeletonItem size={16} style={{ width: "50%" }} />
+					</Skeleton>
+				</div>
+			) : html ? (
 				<div className={classes.assistantCard}>
-					<CustomRenderer message={message} />
+					<IsolatedHtmlRenderer html={html} />
 				</div>
 			) : (
 				<div className={classes.assistantBubble}>{message.content}</div>

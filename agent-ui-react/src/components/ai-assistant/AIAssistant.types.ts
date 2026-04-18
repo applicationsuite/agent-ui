@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import type { ReactNode } from "react";
 import type { IChatAdapter } from "./adapters/types";
 import type { AIAssistantExtension } from "./extensions/types";
 import type { IAIAssistantService } from "./AIAssistant.services";
@@ -69,7 +69,7 @@ export interface IAIAssistantProps {
 	showFullScreenToggle?: boolean;
 	className?: string;
 	extensions?: AIAssistantExtension[];
-	renderMessage?: ComponentType<{ message: IChatMessage }>;
+	renderMessage?: (message: IChatMessage) => ReactNode;
 	service?: IAIAssistantService;
 	permissions?: AIAssistantPermission[];
 	agents?: IAIAssistantAgent[];

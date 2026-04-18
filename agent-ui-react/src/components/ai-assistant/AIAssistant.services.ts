@@ -42,6 +42,11 @@ export interface IConversationService {
 	getConversationMessages: (
 		threadId: string,
 	) => Promise<IEntity<IChatMessage[]>>;
+	generateDynamicUi: (
+		data: string,
+		prompt: string,
+		model?: string,
+	) => Promise<string | undefined>;
 }
 
 export interface IAIAssistantService
@@ -223,6 +228,35 @@ export class AIAssistantService implements IAIAssistantService {
 		}
 
 		return { data: messages };
+	}
+
+	/**
+	 * Calls the /render/html endpoint with data and a system prompt.
+	 * Prompt construction and response normalization are handled by the caller.
+	 */
+	async generateDynamicUi(
+		data: string,
+		prompt: string,
+		model?: string,
+	): Promise<string | undefined> {
+		try {
+			const token = await this.getToken();
+			if (!token) return undefined;
+			const res = await fetch(`${this.baseUrl}/render/html`, {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+					"X-Model-Deployment": model ?? "",
+				},
+				body: JSON.stringify({ data, prompt }),
+			});
+			if (!res.ok) return undefined;
+			const raw = await res.text();
+			return raw?.trim() || undefined;
+		} catch {
+			return undefined;
+		}
 	}
 
 	/**
