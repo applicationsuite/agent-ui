@@ -1,17 +1,10 @@
 import { mergeClasses } from "@fluentui/react-components";
 import { SparkleRegular } from "@fluentui/react-icons";
-import type { ChatMessage } from "./AIAssistant.types";
-import { ChatMessageBubble } from "./ChatMessageBubble";
-import { useAutoScroll } from "./useAutoScroll";
-import { useAIAssistantStyles } from "./AIAssistant.styles";
-import type { ComponentType } from "react";
-
-interface ChatAreaProps {
-	messages: ChatMessage[];
-	isStreaming: boolean;
-	streamingText: string;
-	renderMessage?: ComponentType<{ message: ChatMessage }>;
-}
+import { ChatMessageBubble } from "../ChatMessageBubble";
+import { useChatMessageBubbleStyles } from "../ChatMessageBubble";
+import { useAutoScroll } from "../hooks";
+import { useChatAreaStyles } from "./ChatArea.styles";
+import type { ChatAreaProps } from "./ChatArea.types";
 
 const TYPING_DOT_CLASSES = ["typingDot1", "typingDot2", "typingDot3"] as const;
 
@@ -21,7 +14,8 @@ export const ChatArea = ({
 	streamingText,
 	renderMessage,
 }: ChatAreaProps) => {
-	const classes = useAIAssistantStyles();
+	const classes = useChatAreaStyles();
+	const msgClasses = useChatMessageBubbleStyles();
 	const { scrollRef } = useAutoScroll(messages.length);
 
 	return (
@@ -33,11 +27,10 @@ export const ChatArea = ({
 					renderMessage={renderMessage}
 				/>
 			))}
-
 			{isStreaming && (
-				<div className={classes.assistantBlock}>
-					<div className={classes.assistantPreamble}>
-						<span className={classes.avatar}>
+				<div className={msgClasses.assistantBlock}>
+					<div className={msgClasses.assistantPreamble}>
+						<span className={msgClasses.avatar}>
 							<SparkleRegular fontSize={18} />
 						</span>
 						{streamingText ? (
@@ -54,7 +47,7 @@ export const ChatArea = ({
 						)}
 					</div>
 					{streamingText && (
-						<div className={classes.assistantBubble}>{streamingText}</div>
+						<div className={msgClasses.assistantBubble}>{streamingText}</div>
 					)}
 				</div>
 			)}

@@ -1,14 +1,15 @@
 import { useCallback, useRef, useState } from "react";
-import type { ChatAdapter } from "./adapters/types";
-import type { ChatMessage } from "./AIAssistant.types";
+import type { ChatAdapter } from "../adapters/types";
+import type { ChatMessage } from "../AIAssistant/AIAssistant.types";
 
 let idCounter = 0;
 const nextId = () => `msg-${++idCounter}-${Date.now()}`;
 const nextThreadId = () =>
 	`thread-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-interface UseChatStateResult {
+export interface UseChatStateResult {
 	messages: ChatMessage[];
+	setMessages: (messages: ChatMessage[]) => void;
 	threadId: string;
 	isStreaming: boolean;
 	streamingText: string;
@@ -55,6 +56,7 @@ export const useChatState = (adapter: ChatAdapter): UseChatStateResult => {
 			(async () => {
 				let fullText = "";
 				let hadError = false;
+				let messageData: Record<string, unknown> | undefined;
 
 				try {
 					const stream = adapter.sendMessage({
@@ -75,6 +77,7 @@ export const useChatState = (adapter: ChatAdapter): UseChatStateResult => {
 								break;
 							case "text-done":
 								fullText = event.content || fullText;
+								if (event.data) messageData = event.data;
 								setStreamingText(fullText);
 								break;
 							case "error":
@@ -119,6 +122,7 @@ export const useChatState = (adapter: ChatAdapter): UseChatStateResult => {
 							role: "assistant",
 							content: fullText,
 							timestamp: new Date().toISOString(),
+							data: messageData,
 						},
 					]);
 				}
@@ -142,6 +146,7 @@ export const useChatState = (adapter: ChatAdapter): UseChatStateResult => {
 
 	return {
 		messages,
+		setMessages,
 		threadId,
 		isStreaming,
 		streamingText,

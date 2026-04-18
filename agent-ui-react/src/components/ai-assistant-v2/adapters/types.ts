@@ -5,7 +5,7 @@
 
 export type ChatEvent =
 	| { type: "text-delta"; content: string }
-	| { type: "text-done"; content: string }
+	| { type: "text-done"; content: string; data?: Record<string, unknown> }
 	| { type: "error"; message: string };
 
 export interface SendMessageRequest {

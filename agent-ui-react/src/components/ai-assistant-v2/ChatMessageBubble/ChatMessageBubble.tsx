@@ -1,39 +1,13 @@
 import { SparkleRegular } from "@fluentui/react-icons";
-import type { ChatMessage } from "./AIAssistant.types";
-import { useAIAssistantStyles } from "./AIAssistant.styles";
-import type { ComponentType } from "react";
-
-const formatTime = (timestamp: string): string => {
-	const date = new Date(timestamp);
-	const now = new Date();
-	const diffMs = now.getTime() - date.getTime();
-	const oneDayMs = 24 * 60 * 60 * 1000;
-	const time = date.toLocaleTimeString([], {
-		hour: "2-digit",
-		minute: "2-digit",
-	});
-	if (diffMs >= oneDayMs) {
-		const sameYear = date.getFullYear() === now.getFullYear();
-		const dateStr = date.toLocaleDateString([], {
-			month: "short",
-			day: "numeric",
-			...(sameYear ? {} : { year: "numeric" }),
-		});
-		return `${dateStr}, ${time}`;
-	}
-	return time;
-};
-
-interface ChatMessageBubbleProps {
-	message: ChatMessage;
-	renderMessage?: ComponentType<{ message: ChatMessage }>;
-}
+import { useChatMessageBubbleStyles } from "./ChatMessageBubble.styles";
+import { formatTime } from "./ChatMessageBubble.utils";
+import type { ChatMessageBubbleProps } from "./ChatMessageBubble.types";
 
 export const ChatMessageBubble = ({
 	message,
 	renderMessage: CustomRenderer,
 }: ChatMessageBubbleProps) => {
-	const classes = useAIAssistantStyles();
+	const classes = useChatMessageBubbleStyles();
 
 	if (message.role === "user") {
 		return (
@@ -61,7 +35,6 @@ export const ChatMessageBubble = ({
 		);
 	}
 
-	// Assistant message
 	return (
 		<div className={classes.assistantBlock}>
 			<div className={classes.assistantPreamble}>

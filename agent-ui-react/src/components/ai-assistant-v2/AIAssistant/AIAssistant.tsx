@@ -1,0 +1,432 @@
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+	type CSSProperties,
+} from "react";
+import { mergeClasses, tokens } from "@fluentui/react-components";
+import {
+	AddRegular,
+	FullScreenMaximize20Regular,
+	FullScreenMinimize20Regular,
+	DismissRegular,
+	PanelLeftRegular,
+	Search12Regular,
+	SparkleRegular,
+} from "@fluentui/react-icons";
+import type { AIAssistantProps } from "./AIAssistant.types";
+import { AIAssistantContext } from "./AIAssistantContext";
+import { useAIAssistantStyles } from "./AIAssistant.styles";
+import { AIAssistantPermission } from "./AIAssistant.types";
+import { checkPermission } from "./AIAssistant.utils";
+import { useChatState } from "../hooks";
+import { ChatArea } from "../ChatArea";
+import { ChatInput } from "../ChatInput";
+import { StarterPromptChips } from "../StarterPromptChips";
+import { useConversationHistory } from "../extensions/ConversationHistory/useConversationHistory";
+import { getTimeAgo } from "../extensions/ConversationHistory/ConversationHistory.utils";
+import type { StarterPrompt } from "../services/types";
+
+const EXTENSION_PERMISSIONS: Record<string, AIAssistantPermission> = {
+	prompts: AIAssistantPermission.ManageStarterPrompts,
+	templates: AIAssistantPermission.ManageTemplates,
+};
+
+const CHAT_VIEW = "__chat__";
+
+const SidebarHistory = ({ onSelect }: { onSelect: () => void }) => {
+	const classes = useAIAssistantStyles();
+	const {
+		service,
+		filtered,
+		loading,
+		searchQuery,
+		setSearchQuery,
+		handleSelect,
+	} = useConversationHistory();
+
+	if (!service) return null;
+
+	return (
+		<div className={classes.sidebarHistorySection}>
+			<div className={classes.sidebarHistoryHeader}>
+				<span className={classes.sidebarHistoryTitle}>Recent</span>
+			</div>
+			<div className={classes.sidebarSearchWrap}>
+				<Search12Regular className={classes.sidebarSearchIcon} />
+				<input
+					className={classes.sidebarSearchInput}
+					placeholder="Search chats"
+					value={searchQuery}
+					onChange={(e) => setSearchQuery(e.target.value)}
+				/>
+			</div>
+			<div className={classes.sidebarHistoryList}>
+				{loading ? (
+					<div className={classes.sidebarHistoryEmpty}>Loading…</div>
+				) : filtered.length === 0 ? (
+					<div className={classes.sidebarHistoryEmpty}>
+						{searchQuery ? "No matches" : "No conversations yet"}
+					</div>
+				) : (
+					filtered.map((c) => (
+						<button
+							key={c.id}
+							className={classes.sidebarHistoryItem}
+							type="button"
+							title={`${c.firstMessageText} · ${getTimeAgo(c.lastActivityAt)}`}
+							onClick={() => handleSelect(c, onSelect)}
+						>
+							{c.firstMessageText}
+						</button>
+					))
+				)}
+			</div>
+		</div>
+	);
+};
+
+export const AIAssistant = ({
+	adapter,
+	greetingText,
+	headerText = "AI Assistant",
+	defaultFullScreen = false,
+	showFullScreenToggle = true,
+	className,
+	extensions,
+	renderMessage,
+	service,
+	permissions = [AIAssistantPermission.View],
+	agents,
+	onClose,
+}: AIAssistantProps) => {
+	const classes = useAIAssistantStyles();
+	const [isFullScreen, setIsFullScreen] = useState(defaultFullScreen);
+	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+	const [activeView, setActiveView] = useState(CHAT_VIEW);
+	const {
+		messages,
+		setMessages,
+		isStreaming,
+		streamingText,
+		sendMessage,
+		abort,
+		newChat,
+	} = useChatState(adapter);
+
+	const [starterPrompts, setStarterPrompts] = useState<StarterPrompt[]>([]);
+
+	const agentNames = useMemo(() => agents?.map((a) => a.name), [agents]);
+
+	useEffect(() => {
+		if (!service) return;
+		service.getStarterPrompts(agentNames).then((result) => {
+			if (result.data) setStarterPrompts(result.data);
+		});
+	}, [service, agentNames]);
+
+	const contextValue = useMemo(
+		() => ({
+			sendMessage,
+			newChat,
+			messages,
+			setMessages,
+			service,
+			permissions,
+			agents,
+			starterPrompts,
+		}),
+		[
+			sendMessage,
+			newChat,
+			messages,
+			setMessages,
+			service,
+			permissions,
+			agents,
+			starterPrompts,
+		],
+	);
+
+	const themeVars = useMemo(
+		() =>
+			({
+				"--agent-chat-bg": tokens.colorNeutralBackground2,
+				"--agent-chat-fg": tokens.colorNeutralForeground1,
+				"--agent-chat-brand": tokens.colorBrandBackground,
+				"--agent-chat-brand-hover": tokens.colorBrandBackgroundHover,
+				"--agent-chat-surface": tokens.colorNeutralBackground1,
+				"--agent-chat-border": tokens.colorNeutralStroke2,
+				"--agent-chat-hover": tokens.colorNeutralBackground1Hover,
+				"--agent-chat-muted": tokens.colorNeutralForeground3,
+				"--agent-chat-user-fg": tokens.colorNeutralForegroundOnBrand,
+				"--agent-chat-card": tokens.colorNeutralBackground1,
+				"--agent-chat-sidebar-bg": tokens.colorNeutralBackground3,
+			}) as CSSProperties & Record<string, string>,
+		[],
+	);
+
+	const hasMessages = messages.length > 0 || isStreaming;
+
+	const visibleExtensions = useMemo(
+		() =>
+			extensions?.filter((ext) => {
+				const required = EXTENSION_PERMISSIONS[ext.extensionMeta.key];
+				return !required || checkPermission(permissions, required);
+			}),
+		[extensions, permissions],
+	);
+
+	const handleToggleFullScreen = useCallback(() => {
+		setIsFullScreen((prev) => {
+			const next = !prev;
+			if (next && activeView === "chats") {
+				setActiveView(CHAT_VIEW);
+			}
+			return next;
+		});
+	}, [activeView]);
+
+	const handleToggleSidebar = useCallback(() => {
+		setIsSidebarCollapsed((prev) => !prev);
+	}, []);
+
+	const handleNavSelect = useCallback((key: string) => {
+		setActiveView((prev) => (prev === key ? CHAT_VIEW : key));
+	}, []);
+
+	const handleBackToChat = useCallback(() => {
+		setActiveView(CHAT_VIEW);
+	}, []);
+
+	const handleNewChat = useCallback(() => {
+		newChat();
+		setActiveView(CHAT_VIEW);
+	}, [newChat]);
+
+	const activeExtension = visibleExtensions?.find(
+		(ext) => ext.extensionMeta.key === activeView,
+	);
+
+	const hasExtensions = visibleExtensions && visibleExtensions.length > 0;
+
+	const sidebarNavItems = useMemo(
+		() => [
+			{ key: CHAT_VIEW, label: "New Chat", icon: AddRegular },
+			...(visibleExtensions ?? [])
+				.filter((ext) => ext.extensionMeta.key !== "chats")
+				.map((ext) => ({
+					key: ext.extensionMeta.key,
+					label: ext.extensionMeta.label,
+					icon: ext.extensionMeta.icon,
+				})),
+		],
+		[visibleExtensions],
+	);
+
+	const renderContent = () => {
+		if (activeExtension) {
+			const ExtComponent = activeExtension;
+			return <ExtComponent onClose={handleBackToChat} />;
+		}
+		if (hasMessages) {
+			return (
+				<>
+					<ChatArea
+						messages={messages}
+						isStreaming={isStreaming}
+						streamingText={streamingText}
+						renderMessage={renderMessage}
+					/>
+					<ChatInput
+						isStreaming={isStreaming}
+						onSend={sendMessage}
+						onAbort={abort}
+						starterPrompts={starterPrompts}
+					/>
+				</>
+			);
+		}
+		return (
+			<div className={classes.welcomeContainer}>
+				<h1 className={classes.welcomeHeading}>
+					<span className={classes.welcomeHeadingStrong}>Hello,</span>
+					{greetingText ?? "How can I assist you?"}
+				</h1>
+				<div className={classes.welcomeComposerContainer}>
+					<ChatInput
+						isStreaming={isStreaming}
+						onSend={sendMessage}
+						onAbort={abort}
+						starterPrompts={starterPrompts}
+					/>
+					<StarterPromptChips />
+				</div>
+			</div>
+		);
+	};
+
+	return (
+		<AIAssistantContext.Provider value={contextValue}>
+			<div
+				className={mergeClasses(
+					className ?? classes.root,
+					isFullScreen && classes.rootFullScreen,
+				)}
+				style={themeVars}
+			>
+				{/* Header bar */}
+				<div className={classes.header}>
+					<span className={classes.headerTitle}>{headerText}</span>
+					<div className={classes.headerActions}>
+						{!isFullScreen && hasExtensions && (
+							<>
+								<button
+									className={classes.headerButton}
+									type="button"
+									title="New chat"
+									aria-label="New chat"
+									onClick={handleNewChat}
+								>
+									<AddRegular fontSize={18} />
+								</button>
+								{visibleExtensions.map((ext) => (
+									<button
+										key={ext.extensionMeta.key}
+										className={mergeClasses(
+											classes.headerButton,
+											activeView === ext.extensionMeta.key &&
+												classes.headerButtonActive,
+										)}
+										type="button"
+										title={ext.extensionMeta.label}
+										aria-label={ext.extensionMeta.label}
+										onClick={() => handleNavSelect(ext.extensionMeta.key)}
+									>
+										<ext.extensionMeta.icon fontSize={18} />
+									</button>
+								))}
+							</>
+						)}
+						{showFullScreenToggle && (
+							<button
+								className={classes.headerButton}
+								type="button"
+								title={
+									isFullScreen
+										? "Switch to side panel"
+										: "Switch to full screen"
+								}
+								aria-label={
+									isFullScreen
+										? "Switch to side panel"
+										: "Switch to full screen"
+								}
+								onClick={handleToggleFullScreen}
+							>
+								{isFullScreen ? (
+									<FullScreenMinimize20Regular fontSize={18} />
+								) : (
+									<FullScreenMaximize20Regular fontSize={18} />
+								)}
+							</button>
+						)}
+						{onClose && (
+							<button
+								className={classes.headerButton}
+								type="button"
+								title="Close panel"
+								aria-label="Close panel"
+								onClick={onClose}
+							>
+								<DismissRegular fontSize={18} />
+							</button>
+						)}
+					</div>
+				</div>
+
+				{/* Body: sidebar (full-screen) + content */}
+				{isFullScreen && hasExtensions ? (
+					<div className={classes.immersiveLayout}>
+						<div
+							className={mergeClasses(
+								classes.sidebar,
+								isSidebarCollapsed
+									? classes.sidebarCollapsed
+									: classes.sidebarExpanded,
+							)}
+						>
+							<div
+								className={mergeClasses(
+									classes.sidebarTopBar,
+									!isSidebarCollapsed && classes.sidebarTopBarExpanded,
+								)}
+							>
+								{!isSidebarCollapsed && (
+									<SparkleRegular
+										fontSize={20}
+										style={{
+											color: "var(--agent-chat-brand)",
+											marginLeft: 4,
+										}}
+									/>
+								)}
+								<button
+									className={classes.sidebarToggle}
+									type="button"
+									title={
+										isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
+									}
+									aria-label={
+										isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
+									}
+									onClick={handleToggleSidebar}
+								>
+									<PanelLeftRegular fontSize={20} />
+								</button>
+							</div>
+							<nav className={classes.sidebarNav}>
+								{sidebarNavItems.map((item) => (
+									<button
+										key={item.key}
+										className={mergeClasses(
+											classes.sidebarNavButton,
+											!isSidebarCollapsed && classes.sidebarNavButtonExpanded,
+											activeView === item.key &&
+												item.key !== CHAT_VIEW &&
+												classes.sidebarNavButtonActive,
+										)}
+										type="button"
+										title={item.label}
+										aria-label={item.label}
+										onClick={() =>
+											item.key === CHAT_VIEW
+												? handleNewChat()
+												: handleNavSelect(item.key)
+										}
+									>
+										<span className={classes.sidebarNavIcon}>
+											<item.icon fontSize={20} />
+										</span>
+										{!isSidebarCollapsed && (
+											<span className={classes.sidebarNavLabel}>
+												{item.label}
+											</span>
+										)}
+									</button>
+								))}
+							</nav>
+							{!isSidebarCollapsed && (
+								<SidebarHistory onSelect={handleBackToChat} />
+							)}
+						</div>
+						<div className={classes.contentBody}>{renderContent()}</div>
+					</div>
+				) : (
+					<div className={classes.contentBody}>{renderContent()}</div>
+				)}
+			</div>
+		</AIAssistantContext.Provider>
+	);
+};

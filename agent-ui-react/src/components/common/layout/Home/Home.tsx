@@ -8,6 +8,8 @@ import {
 	ConversationHistory,
 	StarterPrompts,
 	TemplateRenderer,
+	createAssistantService,
+	AIAssistantPermission,
 } from "../../../ai-assistant-v2";
 import { AIAssistant as AIAssistantV1 } from "../../../ai-assistant/AIAssistant";
 import {
@@ -93,6 +95,16 @@ export const Home = () => {
 
 	const adapter = useMemo(
 		() => agUiAdapter({ url: aguiUrl, getToken: getAccessToken }),
+		[getAccessToken],
+	);
+
+	const assistantService = useMemo(
+		() =>
+			createAssistantService({
+				baseUrl: apiBaseUrl,
+				getToken: getAccessToken,
+				agentNames: HOME_ASSISTANT_AGENTS.map((a) => a.name),
+			}),
 		[getAccessToken],
 	);
 
@@ -183,6 +195,11 @@ export const Home = () => {
 								<AIAssistant
 									adapter={adapter}
 									extensions={extensions}
+									service={assistantService}
+									permissions={[
+										//AIAssistantPermission.ManageStarterPrompts,
+										//AIAssistantPermission.ManageTemplates,
+									]}
 									defaultFullScreen
 									//showFullScreenToggle={false}
 								/>

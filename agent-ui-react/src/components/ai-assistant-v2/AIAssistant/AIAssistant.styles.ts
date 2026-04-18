@@ -1,16 +1,5 @@
 import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
-const typingBounce = {
-	"0%, 80%, 100%": {
-		transform: "scale(0.6)",
-		opacity: "0.5",
-	},
-	"40%": {
-		transform: "scale(1)",
-		opacity: "1",
-	},
-};
-
 export const useAIAssistantStyles = makeStyles({
 	/* ── Root layout ── */
 	root: {
@@ -32,7 +21,6 @@ export const useAIAssistantStyles = makeStyles({
 		bottom: 0,
 		zIndex: 10,
 	},
-	/* Full-screen: sidebar + content in a row */
 	immersiveLayout: {
 		display: "flex",
 		flexDirection: "row",
@@ -65,7 +53,7 @@ export const useAIAssistantStyles = makeStyles({
 		overflow: "hidden",
 	},
 	sidebarExpanded: {
-		width: "220px",
+		width: "260px",
 	},
 	sidebarCollapsed: {
 		width: "44px",
@@ -105,8 +93,7 @@ export const useAIAssistantStyles = makeStyles({
 		flexDirection: "column",
 		...shorthands.gap("2px"),
 		...shorthands.padding("4px", "6px"),
-		flex: 1,
-		overflowY: "auto",
+		flexShrink: 0,
 		overflowX: "hidden",
 	},
 	sidebarNavButton: {
@@ -246,226 +233,89 @@ export const useAIAssistantStyles = makeStyles({
 		boxSizing: "border-box",
 	},
 
-	/* ── Thread / message list ── */
-	thread: {
+	/* ── Sidebar chat history (full-screen only) ── */
+	sidebarHistorySection: {
+		display: "flex",
+		flexDirection: "column",
 		flex: 1,
 		minHeight: 0,
-		overflowY: "auto",
-		overflowX: "hidden",
-		width: "100%",
-		maxWidth: "920px",
-		alignSelf: "center",
-		...shorthands.padding("20px", "24px", "12px"),
-		boxSizing: "border-box",
-		display: "flex",
-		flexDirection: "column",
-		...shorthands.gap("18px"),
+		...shorthands.borderTop("1px", "solid", "var(--agent-chat-border)"),
+		marginTop: "4px",
 	},
-
-	/* ── User message ── */
-	userBlock: {
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "flex-end",
-		...shorthands.gap("4px"),
-	},
-	userTime: {
-		fontSize: tokens.fontSizeBase100,
-		color: "var(--agent-chat-muted)",
-	},
-	userBubble: {
-		maxWidth: "86%",
-		backgroundColor: "var(--agent-chat-brand)",
-		color: "var(--agent-chat-user-fg)",
-		...shorthands.padding("10px", "16px"),
-		...shorthands.borderRadius("16px", "16px", "4px", "16px"),
-		fontSize: tokens.fontSizeBase300,
-		lineHeight: tokens.lineHeightBase300,
-		fontWeight: tokens.fontWeightRegular,
-		overflowWrap: "break-word",
-		wordBreak: "break-word",
-		boxSizing: "border-box",
-	},
-
-	/* ── Assistant message ── */
-	assistantBlock: {
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "flex-start",
-		...shorthands.gap("6px"),
-	},
-	assistantPreamble: {
-		display: "flex",
-		alignItems: "center",
-		...shorthands.gap("8px"),
-		color: "var(--agent-chat-muted)",
-		fontSize: tokens.fontSizeBase100,
-	},
-	avatar: {
-		width: "32px",
-		height: "32px",
-		borderRadius: "50%",
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		backgroundImage: "linear-gradient(135deg, #3367d6 0%, #5f4dd0 100%)",
-		color: "#ffffff",
-		flexShrink: 0,
-	},
-	assistantCard: {
-		width: "calc(100% - 40px)",
-		marginLeft: "40px",
-		backgroundColor: "var(--agent-chat-card)",
-		...shorthands.border("1px", "solid", "var(--agent-chat-border)"),
-		...shorthands.borderRadius("4px", "16px", "16px", "16px"),
-		...shorthands.padding("12px", "16px"),
-		boxSizing: "border-box",
-	},
-	assistantBubble: {
-		maxWidth: "calc(100% - 40px)",
-		marginLeft: "40px",
-		backgroundColor: "var(--agent-chat-surface)",
-		color: "var(--agent-chat-fg)",
-		...shorthands.border("1px", "solid", "var(--agent-chat-border)"),
-		...shorthands.borderRadius("4px", "16px", "16px", "16px"),
-		...shorthands.padding("10px", "16px"),
-		fontSize: tokens.fontSizeBase300,
-		lineHeight: tokens.lineHeightBase300,
-		whiteSpace: "pre-wrap",
-		overflowWrap: "break-word",
-		wordBreak: "break-word",
-		boxSizing: "border-box",
-	},
-
-	/* ── Error message ── */
-	errorText: {
-		color: "var(--colorPaletteRedForeground1, #c4314b)",
-		fontSize: "0.88rem",
-	},
-
-	/* ── Typing indicator ── */
-	typingIndicator: {
-		display: "inline-flex",
-		alignItems: "center",
-		...shorthands.gap("6px"),
-	},
-	typingDot: {
-		width: "6px",
-		height: "6px",
-		borderRadius: "50%",
-		backgroundColor: "var(--agent-chat-brand)",
-		animationName: typingBounce,
-		animationDuration: "1.4s",
-		animationTimingFunction: "ease-in-out",
-		animationIterationCount: "infinite",
-		animationFillMode: "both",
-	},
-	typingDot1: {
-		animationDelay: "0s",
-	},
-	typingDot2: {
-		animationDelay: "0.16s",
-	},
-	typingDot3: {
-		animationDelay: "0.32s",
-	},
-
-	/* ── Composer / input ── */
-	composerContainer: {
-		width: "100%",
-		maxWidth: "920px",
-		alignSelf: "center",
-		...shorthands.padding("4px", "12px", "18px"),
-		boxSizing: "border-box",
-		flexShrink: 0,
-	},
-	composer: {
-		display: "flex",
-		flexDirection: "column",
-		...shorthands.border("1px", "solid", "var(--agent-chat-border)"),
-		...shorthands.borderRadius("16px"),
-		backgroundColor: "var(--agent-chat-card)",
-		...shorthands.padding("12px", "12px", "8px"),
-		boxShadow: tokens.shadow8,
-		transitionProperty: "box-shadow",
-		transitionDuration: "0.2s",
-		":focus-within": {
-			...shorthands.border("1px", "solid", "var(--agent-chat-brand)"),
-			boxShadow: tokens.shadow16,
-		},
-	},
-	composerInput: {
-		width: "100%",
-		border: "none",
-		outlineStyle: "none",
-		resize: "none" as const,
-		backgroundColor: "transparent",
-		color: "var(--agent-chat-fg)",
-		fontFamily: tokens.fontFamilyBase,
-		fontSize: tokens.fontSizeBase300,
-		lineHeight: tokens.lineHeightBase300,
-		minHeight: "28px",
-		maxHeight: "120px",
-		paddingRight: "4px",
-		"::placeholder": {
-			color: "var(--agent-chat-muted)",
-		},
-	},
-	composerFooter: {
+	sidebarHistoryHeader: {
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "space-between",
-		...shorthands.gap("8px"),
+		...shorthands.padding("8px", "10px", "4px"),
+		flexShrink: 0,
 	},
-	leftTools: {
+	sidebarHistoryTitle: {
+		fontSize: tokens.fontSizeBase100,
+		fontWeight: tokens.fontWeightSemibold,
+		color: "var(--agent-chat-muted)",
+		textTransform: "uppercase",
+		letterSpacing: "0.04em",
+	},
+	sidebarSearchWrap: {
+		position: "relative",
+		...shorthands.padding("0", "8px", "6px"),
+		flexShrink: 0,
+	},
+	sidebarSearchIcon: {
+		position: "absolute",
+		left: "14px",
+		top: "calc(50% - 3px)",
+		transform: "translateY(-50%)",
+		color: "var(--agent-chat-muted)",
+		pointerEvents: "none",
+		fontSize: "12px",
+	},
+	sidebarSearchInput: {
+		width: "100%",
+		boxSizing: "border-box",
+		...shorthands.padding("5px", "8px", "5px", "26px"),
+		...shorthands.border("1px", "solid", "var(--agent-chat-border)"),
+		...shorthands.borderRadius("6px"),
+		fontSize: tokens.fontSizeBase100,
+		color: "var(--agent-chat-fg)",
+		backgroundColor: "var(--agent-chat-surface)",
+		outlineStyle: "none",
+		fontFamily: "inherit",
+		"::placeholder": { color: "var(--agent-chat-muted)" },
+	},
+	sidebarHistoryList: {
+		flex: 1,
+		overflowY: "auto",
+		overflowX: "hidden",
+		...shorthands.padding("0", "6px"),
+		scrollbarWidth: "thin" as const,
+	},
+	sidebarHistoryItem: {
 		display: "flex",
 		alignItems: "center",
-		...shorthands.gap("4px"),
-		minWidth: 0,
-	},
-	iconButton: {
-		minWidth: "34px",
-		width: "34px",
-		height: "34px",
-		...shorthands.borderRadius("50%"),
-		...shorthands.padding("0"),
+		width: "100%",
+		...shorthands.padding("7px", "8px"),
 		...shorthands.border("none"),
+		...shorthands.borderRadius("8px"),
 		backgroundColor: "transparent",
-		color: "var(--agent-chat-muted)",
+		color: "var(--agent-chat-fg)",
 		cursor: "pointer",
-		display: "inline-flex",
-		alignItems: "center",
-		justifyContent: "center",
+		fontSize: tokens.fontSizeBase200,
+		fontFamily: "inherit",
+		textAlign: "left" as const,
+		whiteSpace: "nowrap",
+		overflow: "hidden",
+		textOverflow: "ellipsis",
+		minHeight: "32px",
+		boxSizing: "border-box",
 		":hover": {
 			backgroundColor: "var(--agent-chat-hover)",
-			color: "var(--agent-chat-fg)",
 		},
 	},
-	rightTools: {
-		display: "flex",
-		alignItems: "center",
-		...shorthands.gap("6px"),
-	},
-	sendButton: {
-		minWidth: "36px",
-		width: "36px",
-		height: "36px",
-		...shorthands.borderRadius("50%"),
-		...shorthands.padding("0"),
-		...shorthands.border("none"),
-		backgroundColor: "transparent",
+	sidebarHistoryEmpty: {
+		...shorthands.padding("16px", "10px"),
+		fontSize: tokens.fontSizeBase100,
 		color: "var(--agent-chat-muted)",
-		cursor: "pointer",
-		display: "inline-flex",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	sendButtonActive: {
-		color: "#ffffff",
-		backgroundColor: "var(--agent-chat-brand)",
-		":hover": {
-			backgroundColor: "#0c5da5",
-			color: "#ffffff",
-		},
+		textAlign: "center" as const,
 	},
 });

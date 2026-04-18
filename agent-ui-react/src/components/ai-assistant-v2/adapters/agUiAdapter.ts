@@ -77,6 +77,7 @@ export const agUiAdapter = (options: AgUiAdapterOptions): ChatAdapter => {
 					push({
 						type: "text-done",
 						content: params.textMessageBuffer ?? "",
+						data: buildData(),
 					});
 				},
 				onRunErrorEvent: (params) => {
@@ -88,10 +89,23 @@ export const agUiAdapter = (options: AgUiAdapterOptions): ChatAdapter => {
 				onRunFinishedEvent: () => {
 					// will be marked done after runAgent resolves
 				},
-				onToolCallStartEvent: () => {},
-				onToolCallArgsEvent: () => {},
+				onToolCallStartEvent: (params) => {
+					const id = params.event.toolCallId;
+					const name =
+						(params.event as { toolCallName?: string }).toolCallName ??
+						(params.event as { name?: string }).name ??
+						"";
+					toolCalls.set(id, { id, name });
+				},
+				onToolCallArgsEvent: (params) => {
+					const tc = toolCalls.get(params.event.toolCallId);
+					if (tc) tc.args = (tc.args ?? "") + (params.event.delta ?? "");
+				},
 				onToolCallEndEvent: () => {},
-				onToolCallResultEvent: () => {},
+				onToolCallResultEvent: (params) => {
+					const tc = toolCalls.get(params.event.toolCallId);
+					if (tc) tc.result = params.event.content;
+				},
 				onStepStartedEvent: () => {},
 				onStepFinishedEvent: () => {},
 			};
@@ -102,6 +116,11 @@ export const agUiAdapter = (options: AgUiAdapterOptions): ChatAdapter => {
 					abortController.abort(),
 				);
 			}
+
+			const buildData = (): Record<string, unknown> | undefined => {
+				if (toolCalls.size === 0) return undefined;
+				return { toolCalls: [...toolCalls.values()] };
+			};
 
 			// Run agent in background, push events via subscriber
 			const runPromise = agent
@@ -115,7 +134,11 @@ export const agUiAdapter = (options: AgUiAdapterOptions): ChatAdapter => {
 						.join("\n")
 						.trim();
 					if (assistantText) {
-						push({ type: "text-done", content: assistantText });
+						push({
+							type: "text-done",
+							content: assistantText,
+							data: buildData(),
+						});
 					}
 				})
 				.catch((err: Error) => {
