@@ -180,11 +180,30 @@ export class AIAssistantService implements IAIAssistantService {
 		>();
 
 		for (const m of result.data) {
-			if (m.role === "system" || m.role === "tool") continue;
+			if (m.role === "system") continue;
 
 			const parsed = m.serializedMessage
 				? this.parseSerialized(m.serializedMessage)
 				: null;
+
+			// Tool-role messages: extract results into pendingToolCalls, then skip
+			if (m.role === "tool") {
+				if (parsed) {
+					for (const tr of parsed.toolResults) {
+						const existing = pendingToolCalls.get(tr.id);
+						if (existing) {
+							existing.result = tr.result;
+						} else {
+							pendingToolCalls.set(tr.id, {
+								id: tr.id,
+								name: "",
+								result: tr.result,
+							});
+						}
+					}
+				}
+				continue;
+			}
 
 			// Accumulate function calls and results without emitting a message
 			if (parsed?.onlyToolContent) {
@@ -201,6 +220,12 @@ export class AIAssistantService implements IAIAssistantService {
 					const existing = pendingToolCalls.get(tr.id);
 					if (existing) {
 						existing.result = tr.result;
+					} else {
+						pendingToolCalls.set(tr.id, {
+							id: tr.id,
+							name: "",
+							result: tr.result,
+						});
 					}
 				}
 				continue;

@@ -40,14 +40,15 @@ export const useConversationHistory = () => {
 	const handleSelect = useCallback(
 		async (conversation: IConversation, onClose: () => void) => {
 			if (!service) return;
+			setThreadId(conversation.threadId);
+			setMessages([]);
+			onClose();
 			const result = await service.getConversationMessages(
 				conversation.threadId,
 			);
 			if (result.data) {
-				setThreadId(conversation.threadId);
 				setMessages(result.data);
 			}
-			onClose();
 		},
 		[service, setMessages, setThreadId],
 	);

@@ -48,22 +48,46 @@ export const normalizeGeneratedHtml = (raw: string): string => {
 };
 
 /**
+ * In-flight / resolved cache keyed by message ID.
+ * Guarantees exactly one HTTP request per message regardless of
+ * how many times React calls resolveMessage (StrictMode, re-renders, etc.).
+ */
+const resolveCache = new Map<string, Promise<string | undefined>>();
+
+/**
  * Resolves a single assistant message through the rendering pipeline:
  *
  * 1. templateId in data — fetch template from DB, return rendered HTML.
  * 2. generateDynamicUi — call OpenAI to produce HTML.
- * 3. Returns undefined — caller falls back to raw string.
+ * 3. Returns raw content — caller renders as plain text.
+ *
+ * Results are cached by message ID.
  */
-export const resolveMessage = async (
+export const resolveMessage = (
 	message: IChatMessage,
 	service: IAIAssistantService,
 	model?: string,
 ): Promise<string | undefined> => {
-	if (message.role !== "assistant" || !message.data) return undefined;
+	if (message.role !== "assistant") return Promise.resolve(undefined);
+
+	const existing = resolveCache.get(message.id);
+	if (existing) return existing;
+
+	const promise = resolveMessageImpl(message, service, model);
+	resolveCache.set(message.id, promise);
+	return promise;
+};
+
+const resolveMessageImpl = async (
+	message: IChatMessage,
+	service: IAIAssistantService,
+	model?: string,
+): Promise<string | undefined> => {
 
 	// Priority 1: templateId in data — fetch DB template
 	const templateId =
-		(message.data.templateId as string) ?? (message.data.TemplateId as string);
+		(message.data?.templateId as string) ??
+		(message.data?.TemplateId as string);
 	if (templateId) {
 		try {
 			const entity = await service.getTemplateById(templateId);
@@ -76,19 +100,28 @@ export const resolveMessage = async (
 	}
 
 	// Priority 2: Generate dynamic HTML via OpenAI
-	const toolPayload = extractToolPayload(message.data);
-	if (toolPayload) {
-		const data = JSON.stringify(toolPayload);
-		const customPrompt = ''; //message.customPrompt as string | undefined;
+	const toolPayload = message.data
+		? extractToolPayload(message.data)
+		: undefined;
+	const dataStr = toolPayload
+		? JSON.stringify(toolPayload)
+		: message.content?.trim() || undefined;
+
+	if (dataStr) {
+		const customPrompt = ""; //message.customPrompt as string | undefined;
 		const prompt = [buildSystemPrompt(), customPrompt?.trim()]
 			.filter(Boolean)
 			.join("\n\n");
-		const raw = await service.generateDynamicUi(data, prompt, model);
-		if (raw) return normalizeGeneratedHtml(raw) || undefined;
+		try {
+			const raw = await service.generateDynamicUi(dataStr, prompt, model);
+			if (raw) return normalizeGeneratedHtml(raw) || undefined;
+		} catch {
+			/* fall through to raw text */
+		}
 	}
 
-	// Priority 3: Raw string — caller handles fallback
-	return undefined;
+	// Priority 3: Return raw content
+	return message.content?.trim() || undefined;
 };
 
 const extractToolPayload = (

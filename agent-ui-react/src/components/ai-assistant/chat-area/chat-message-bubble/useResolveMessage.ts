@@ -13,51 +13,50 @@ export const useResolveMessage = (
 	service: IAIAssistantService | undefined,
 	hasCustomRenderer: boolean,
 ): IUseResolveMessageResult => {
+	const skip =
+		hasCustomRenderer ||
+		message.role !== "assistant" ||
+		!message.content?.trim();
+
 	const [resolvedHtml, setResolvedHtml] = useState<string | undefined>(
-		message.data?.__resolvedHtml as string | undefined,
+		undefined,
 	);
-	const [isLoading, setIsLoading] = useState(false);
-	const resolvedRef = useRef(false);
+	const [isLoading, setIsLoading] = useState(!skip);
+
+	const serviceRef = useRef(service);
+	serviceRef.current = service;
 
 	useEffect(() => {
-		// Already resolved, has a custom renderer, not an assistant message,
-		// or no data to resolve — skip.
-		if (
-			resolvedRef.current ||
-			hasCustomRenderer ||
-			message.role !== "assistant" ||
-			!message.data ||
-			!service
-		) {
+		if (skip) {
+			setIsLoading(false);
 			return;
 		}
 
-		// If already resolved from a previous load
-		if (message.data.__resolvedHtml || message.data.__templateConfig) {
-			resolvedRef.current = true;
-			setResolvedHtml(message.data.__resolvedHtml as string | undefined);
-			return;
-		}
+		const svc = serviceRef.current;
+		if (!svc) return;
 
 		let disposed = false;
-		resolvedRef.current = true;
-		setIsLoading(true);
 
-		resolveMessage(message, service)
+		// resolveMessage deduplicates by message.id — safe to call multiple times
+		resolveMessage(message, svc)
 			.then((html) => {
-				if (!disposed) setResolvedHtml(html);
+				if (!disposed) {
+					setResolvedHtml(html);
+					setIsLoading(false);
+				}
 			})
 			.catch(() => {
-				/* fall through to raw string */
-			})
-			.finally(() => {
-				if (!disposed) setIsLoading(false);
+				if (!disposed) {
+					setResolvedHtml(undefined);
+					setIsLoading(false);
+				}
 			});
 
 		return () => {
 			disposed = true;
 		};
-	}, [message, service, hasCustomRenderer]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [message.id, skip, service]);
 
 	return { resolvedHtml, isLoading };
 };
