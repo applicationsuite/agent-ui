@@ -1,9 +1,9 @@
 {
-  "templates": [
-    {
-      "templateId": "template-renderer",
-      "componentPath": "template-renderer/TemplateRenderer",
-      "exportName": "TemplateRenderer"
-    }
-  ]
+	"templates": [
+		{
+			"templateId": "template-renderer",
+			"componentPath": "template-renderer/TemplateRenderer",
+			"exportName": "TemplateRenderer"
+		}
+	]
 }

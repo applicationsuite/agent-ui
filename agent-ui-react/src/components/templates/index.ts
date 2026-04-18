@@ -1,2 +1,2 @@
-export * from './common';
-export * from './template-designer';
+export * from "./common";
+export * from "./template-designer";

@@ -1,5 +1,5 @@
 export interface IEntity<T> {
-  data?: T;
-  loading?: boolean;
-  error?: string;
+	data?: T;
+	loading?: boolean;
+	error?: string;
 }

@@ -1,7 +1,7 @@
-import { Text } from '@fluentui/react-components';
-import type { ITemplate } from '../templates.models';
-import type { ITemplateComponentProps } from '../../ai-assistant/AIAssistant.models';
-import { TemplateCard } from './control-renderer/TemplateCard';
+import { Text } from "@fluentui/react-components";
+import type { ITemplate } from "../templates.models";
+import type { ITemplateComponentProps } from "../../ai-assistant/AIAssistant.models";
+import { TemplateCard } from "./control-renderer/TemplateCard";
 
 /**
  * Renders an ITemplate against server data.
@@ -15,16 +15,16 @@ import { TemplateCard } from './control-renderer/TemplateCard';
  * a sibling `serverData` key.
  */
 export const TemplateRenderer = (props: ITemplateComponentProps) => {
-  const { data: propsData, onAction } = props;
+	const { data: propsData, onAction } = props;
 
-  const template = (propsData?.template ?? propsData) as ITemplate | undefined;
-  const data = (propsData?.serverData ?? {}) as Record<string, unknown>;
+	const template = (propsData?.template ?? propsData) as ITemplate | undefined;
+	const data = (propsData?.serverData ?? {}) as Record<string, unknown>;
 
-  if (!template?.card) {
-    return <Text>No template data available.</Text>;
-  }
+	if (!template?.card) {
+		return <Text>No template data available.</Text>;
+	}
 
-  return <TemplateCard {...template.card} data={data} onAction={onAction} />;
+	return <TemplateCard {...template.card} data={data} onAction={onAction} />;
 };
 
 export default TemplateRenderer;

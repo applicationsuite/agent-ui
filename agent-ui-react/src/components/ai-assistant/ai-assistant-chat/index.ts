@@ -1,2 +1,2 @@
-export * from './AIAssistantChat';
-export * from './AIAssistantChat.models';
+export * from "./AIAssistantChat";
+export * from "./AIAssistantChat.models";

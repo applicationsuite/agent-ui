@@ -10,7 +10,7 @@ const readmePath = path.resolve(__dirname, "../README.md");
 let readme = fs.readFileSync(readmePath, "utf-8");
 readme = readme.replace(
 	/badge\/version-[\d.]+(-[\w.]+)?-blue/,
-	`badge/version-${version}-blue`
+	`badge/version-${version}-blue`,
 );
 fs.writeFileSync(readmePath, readme);
 console.log(`README badge updated to ${version}`);
@@ -21,10 +21,7 @@ let changelog = fs.readFileSync(changelogPath, "utf-8");
 
 // Add row to the top of the version history table (after |---|---|---|)
 const tableRow = `| [${version}](#${anchor}) | ${today} | - |`;
-changelog = changelog.replace(
-	/(^\|[-| ]+\|$)/m,
-	`$1\n${tableRow}`
-);
+changelog = changelog.replace(/(^\|[-| ]+\|$)/m, `$1\n${tableRow}`);
 
 // Add new section after the first --- separator following the table
 const newSection = [
@@ -46,7 +43,7 @@ const newSection = [
 // Insert before the first ## [x.y.z] section
 changelog = changelog.replace(
 	/(\n---\n\n)(## \[)/,
-	`$1${newSection}\n\n---\n\n$2`
+	`$1${newSection}\n\n---\n\n$2`,
 );
 
 fs.writeFileSync(changelogPath, changelog);

@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface LazyMessageProps {
-  /** Estimated height for the placeholder before content is rendered */
-  estimatedHeight?: number;
-  /** If true, skip lazy loading and render immediately */
-  eager?: boolean;
-  /** Optional class for the wrapper div */
-  className?: string;
-  children: React.ReactNode;
+	/** Estimated height for the placeholder before content is rendered */
+	estimatedHeight?: number;
+	/** If true, skip lazy loading and render immediately */
+	eager?: boolean;
+	/** Optional class for the wrapper div */
+	className?: string;
+	children: React.ReactNode;
 }
 
 /**
@@ -21,40 +21,40 @@ interface LazyMessageProps {
  * that are visible at the bottom).
  */
 export const LazyMessage = ({
-  estimatedHeight = 120,
-  eager = false,
-  className,
-  children,
+	estimatedHeight = 120,
+	eager = false,
+	className,
+	children,
 }: LazyMessageProps) => {
-  const [isVisible, setIsVisible] = useState(eager);
-  const ref = useRef<HTMLDivElement>(null);
+	const [isVisible, setIsVisible] = useState(eager);
+	const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (eager) {
-      setIsVisible(true);
-      return;
-    }
+	useEffect(() => {
+		if (eager) {
+			setIsVisible(true);
+			return;
+		}
 
-    const el = ref.current;
-    if (!el || isVisible) return;
+		const el = ref.current;
+		if (!el || isVisible) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '200px 0px' },
-    );
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) {
+					setIsVisible(true);
+					observer.disconnect();
+				}
+			},
+			{ rootMargin: "200px 0px" },
+		);
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [isVisible, eager]);
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, [isVisible, eager]);
 
-  return (
-    <div ref={ref} className={className}>
-      {isVisible ? children : <div style={{ height: estimatedHeight }} />}
-    </div>
-  );
+	return (
+		<div ref={ref} className={className}>
+			{isVisible ? children : <div style={{ height: estimatedHeight }} />}
+		</div>
+	);
 };

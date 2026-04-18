@@ -1,1 +1,1 @@
-export * from './TemplateDesigner';
+export * from "./TemplateDesigner";

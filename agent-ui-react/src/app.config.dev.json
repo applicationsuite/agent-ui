@@ -1,14 +1,12 @@
 {
-  "api": {
-    "baseUrl": "https://commerce-ai-api.grayglacier-b322328e.eastus2.azurecontainerapps.io/api"
-  },
-  "agentConfig": {
-    "url": "https://orchestratoragent.grayglacier-b322328e.eastus2.azurecontainerapps.io/agui"
-  },
-  "msal": {
-    "clientId": "debdd167-cc10-4b13-83a2-ac1c2e6e5bc2",
-    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
-    "authority": "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0",
-    "scopes": ["api://debdd167-cc10-4b13-83a2-ac1c2e6e5bc2/access_as_user"]
-  }
+	"api": {
+		"baseUrl": "https://www.techtrips.in/api"
+	},
+	"agentConfig": {
+		"url": "https://agent.techtrips.in/agui"
+	},
+	"auth": {
+		"email": "visit.chinmaya@gmail.com",
+		"password": "Chinu@123"
+	}
 }

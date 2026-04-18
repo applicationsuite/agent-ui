@@ -1,5 +1,5 @@
-export { SlidePanel } from './SlidePanel';
+export { SlidePanel } from "./SlidePanel";
 export type {
-  ISlidePanelFooterButtonProps as ISlidePanelButtonProps,
-  ISlidePanelProps,
-} from './SlidePanel.models';
+	ISlidePanelFooterButtonProps as ISlidePanelButtonProps,
+	ISlidePanelProps,
+} from "./SlidePanel.models";

@@ -1,2 +1,2 @@
-export { PageLayout } from './PageLayout';
-export type { IPageLayoutProps } from './PageLayout.models';
+export { PageLayout } from "./PageLayout";
+export type { IPageLayoutProps } from "./PageLayout.models";
