@@ -8,8 +8,7 @@ All notable changes to `agent-ui-react` are documented here. The format follows 
 
 | Version | Date | Highlights |
 |---------|------|------------|
-| [0.1.6](#016--2026-04-19) | 2026-04-19 | - |
-| [0.1.7](#017--2026-04-19) | 2026-04-19 | - |
+| [0.1.6](#016--2026-04-19) | 2026-04-19 | Export new AIAssistant, remove legacy exports |
 | [0.1.5](#015--2026-04-19) | 2026-04-19 | AIAssistant new version created |
 | [0.1.4](#014--2026-03-31) | 2026-03-31 | Repository URL update |
 | [0.1.3](#013--2026-03-31) | 2026-03-31 | Postversion automation, absolute links for npm |
@@ -21,33 +20,10 @@ All notable changes to `agent-ui-react` are documented here. The format follows 
 
 ## [0.1.6] — 2026-04-19
 
-### Added
-
-- _Update this section before publishing_
-
 ### Changed
 
-- _Update this section before publishing_
-
-### Fixed
-
-- _Update this section before publishing_
-
----
-
-## [0.1.7] — 2026-04-19
-
-### Added
-
-- _Update this section before publishing_
-
-### Changed
-
-- _Update this section before publishing_
-
-### Fixed
-
-- _Update this section before publishing_
+- Exported the new `AIAssistant` component as the primary public API.
+- Removed legacy `AIAssistantOld` and `AuthProvider` exports from the package barrel.
 
 ---
 
