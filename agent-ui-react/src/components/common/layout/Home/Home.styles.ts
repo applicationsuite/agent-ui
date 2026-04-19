@@ -21,6 +21,8 @@ export const homeStyles: Record<string, GriffelStyle> = {
 		flexShrink: 0,
 		backgroundColor: tokens.colorBrandBackground,
 		borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+		position: "relative" as const,
+		zIndex: 1,
 	},
 	navBarTitle: {
 		margin: 0,
@@ -78,6 +80,17 @@ export const homeStyles: Record<string, GriffelStyle> = {
 		transitionProperty: "opacity",
 		transitionDuration: "0.25s",
 		transitionTimingFunction: "ease",
+		"@media (max-width: 768px)": {
+			position: "fixed" as const,
+			top: 0,
+			left: 0,
+			right: 0,
+			bottom: 0,
+			zIndex: 9999,
+			width: "100%",
+			height: "100%",
+			overflow: "visible",
+		},
 	},
 	assistantContainerHidden: {
 		width: "0px",

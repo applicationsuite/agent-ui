@@ -3,6 +3,7 @@ import {
 	useEffect,
 	useMemo,
 	useState,
+	useSyncExternalStore,
 	type CSSProperties,
 } from "react";
 import { mergeClasses, tokens } from "@fluentui/react-components";
@@ -33,6 +34,13 @@ const EXTENSION_PERMISSIONS: Record<string, AIAssistantPermission> = {
 };
 
 const CHAT_VIEW = "__chat__";
+const MOBILE_QUERY = "(max-width: 768px)";
+const subscribeMobile = (cb: () => void) => {
+	const mql = window.matchMedia(MOBILE_QUERY);
+	mql.addEventListener("change", cb);
+	return () => mql.removeEventListener("change", cb);
+};
+const getIsMobile = () => window.matchMedia(MOBILE_QUERY).matches;
 
 export const AIAssistant = ({
 	adapter,
@@ -49,7 +57,9 @@ export const AIAssistant = ({
 	onClose,
 }: IAIAssistantProps) => {
 	const classes = useAIAssistantStyles();
+	const isMobile = useSyncExternalStore(subscribeMobile, getIsMobile);
 	const [isFullScreen, setIsFullScreen] = useState(defaultFullScreen);
+	const effectiveFullScreen = isFullScreen && !isMobile;
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 	const [activeView, setActiveView] = useState(CHAT_VIEW);
 	const {
@@ -66,7 +76,7 @@ export const AIAssistant = ({
 
 	const [starterPrompts, setStarterPrompts] = useState<IStarterPrompt[]>([]);
 
-	const isSidePanel = !isFullScreen;
+	const isSidePanel = !effectiveFullScreen;
 	const {
 		width: sidePanelWidth,
 		isResizing,
@@ -213,12 +223,12 @@ export const AIAssistant = ({
 				<div className={classes.welcomeCenter}>
 					<SparkleRegular
 						className={classes.welcomeIcon}
-						fontSize={isFullScreen ? 48 : 40}
+						fontSize={effectiveFullScreen ? 48 : 40}
 					/>
 					<h1
 						className={mergeClasses(
 							classes.welcomeHeading,
-							isFullScreen && classes.welcomeHeadingFullScreen,
+							effectiveFullScreen && classes.welcomeHeadingFullScreen,
 						)}
 					>
 						<span className={classes.welcomeHeadingStrong}>Hello,</span>
@@ -227,7 +237,7 @@ export const AIAssistant = ({
 					<div
 						className={mergeClasses(
 							classes.welcomeComposer,
-							isFullScreen && classes.welcomeComposerFullScreen,
+							effectiveFullScreen && classes.welcomeComposerFullScreen,
 						)}
 					>
 						<ChatInput
@@ -248,7 +258,7 @@ export const AIAssistant = ({
 			<div
 				className={mergeClasses(
 					className ?? classes.root,
-					isFullScreen && classes.rootFullScreen,
+					effectiveFullScreen && classes.rootFullScreen,
 				)}
 				style={{
 					...themeVars,
@@ -274,7 +284,7 @@ export const AIAssistant = ({
 				<div className={classes.header}>
 					<span className={classes.headerTitle}>{headerText}</span>
 					<div className={classes.headerActions}>
-						{!isFullScreen && hasExtensions && (
+						{!effectiveFullScreen && hasExtensions && (
 							<>
 								<button
 									className={classes.headerButton}
@@ -305,21 +315,21 @@ export const AIAssistant = ({
 						)}
 						{showFullScreenToggle && (
 							<button
-								className={classes.headerButton}
+							className={mergeClasses(classes.headerButton, classes.headerButtonHideMobile)}
 								type="button"
 								title={
-									isFullScreen
+									effectiveFullScreen
 										? "Switch to side panel"
 										: "Switch to full screen"
 								}
 								aria-label={
-									isFullScreen
+									effectiveFullScreen
 										? "Switch to side panel"
 										: "Switch to full screen"
 								}
 								onClick={handleToggleFullScreen}
 							>
-								{isFullScreen ? (
+								{effectiveFullScreen ? (
 									<FullScreenMinimize20Regular fontSize={18} />
 								) : (
 									<FullScreenMaximize20Regular fontSize={18} />
@@ -341,7 +351,7 @@ export const AIAssistant = ({
 				</div>
 
 				{/* Body: sidebar (full-screen) + content */}
-				{isFullScreen && hasExtensions ? (
+				{effectiveFullScreen && hasExtensions ? (
 					<div className={classes.immersiveLayout}>
 						<div
 							className={mergeClasses(

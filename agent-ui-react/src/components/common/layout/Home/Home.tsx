@@ -103,6 +103,7 @@ export const Home = () => {
 								extensions={extensions}
 								service={assistantService}
 								agents={HOME_ASSISTANT_AGENTS}
+								onClose={handleToggleAssistant}
 							/>
 						</div>
 					</>

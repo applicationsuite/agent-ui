@@ -14,6 +14,9 @@ export const useAIAssistantStyles = makeStyles({
 		color: "var(--agent-chat-fg)",
 		overflow: "hidden",
 		...shorthands.borderLeft("1px", "solid", "var(--agent-chat-border)"),
+		"@media (max-width: 768px)": {
+			borderLeftWidth: 0,
+		},
 	},
 	rootFullScreen: {
 		position: "absolute",
@@ -225,6 +228,11 @@ export const useAIAssistantStyles = makeStyles({
 	headerButtonActive: {
 		backgroundColor: "var(--agent-chat-hover)",
 		color: "var(--agent-chat-brand)",
+	},
+	headerButtonHideMobile: {
+		"@media (max-width: 768px)": {
+			display: "none",
+		},
 	},
 
 	/* ── Welcome screen ── */
